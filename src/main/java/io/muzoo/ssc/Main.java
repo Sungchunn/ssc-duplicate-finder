@@ -9,35 +9,49 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DecimalFormat;
 import java.util.*;
-
-
 
 public class Main extends SscAssignment {
 
     public static void findDuplicates(String folderPath, String algorithm, boolean countDuplicates, boolean printDuplicates) throws IOException {
         Map<String, List<Path>> hashToFileMap = new HashMap<>();
+        long[] stats = {0, 0, 0}; // [File Count, Folder Count, Total File Size]
 
         // Traverse the file tree
         Files.walkFileTree(Paths.get(folderPath), new SimpleFileVisitor<>() {
             @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                stats[1]++; // Count folders
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                stats[0]++; // Count files
+                stats[2] += Files.size(file); // Accumulate file sizes
+
                 String hash = computeHash(file.toFile(), algorithm);
                 hashToFileMap.computeIfAbsent(hash, k -> new ArrayList<>()).add(file);
                 return FileVisitResult.CONTINUE;
             }
         });
 
-        // Count duplicates
+        DecimalFormat df = new DecimalFormat("#,###");
+        System.out.println("Statistics:");
+        System.out.println(" - Total Files: " + df.format(stats[0]));
+        System.out.println(" - Total Folders: " + df.format(stats[1]));
+        System.out.println(" - Total Size: " + df.format(stats[2]) + " bytes");
+
         if (countDuplicates) {
-            long duplicateCount = hashToFileMap.values().stream()
+            long duplicateGroups = hashToFileMap.values().stream()
                     .filter(paths -> paths.size() > 1)
                     .count();
-            System.out.println("Total duplicate files: " + duplicateCount);
+            System.out.println(" - Total Duplicate Groups: " + duplicateGroups);
         }
 
-        // Print duplicate groups
         if (printDuplicates) {
+            System.out.println("\nDuplicate Files:");
             hashToFileMap.forEach((hash, paths) -> {
                 if (paths.size() > 1) {
                     System.out.println("Duplicate group:");
@@ -54,7 +68,7 @@ public class Main extends SscAssignment {
             } else if ("md5".equalsIgnoreCase(algorithm)) {
                 return DigestUtils.md5Hex(fis);
             } else if ("bbb".equalsIgnoreCase(algorithm)) {
-                return DigestUtils.sha256Hex(fis); // Use SHA256 as fallback for "bbb"
+                return DigestUtils.sha256Hex(fis); // Use SHA256 for byte-by-byte fallback
             } else {
                 throw new IllegalArgumentException("Unsupported algorithm: " + algorithm);
             }
