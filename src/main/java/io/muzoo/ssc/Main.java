@@ -2,12 +2,13 @@ package io.muzoo.ssc;
 
 import io.muzoo.ssc.assignment.tracker.SscAssignment;
 import org.apache.commons.cli.*;
+import java.io.File;
 import java.io.IOException;
 
 public class Main extends SscAssignment {
 
     public static void main(String[] args) {
-        // Remove the default args as -f is required
+        // Default args for testing
         if (args.length == 0) {
             args = new String[]{
                     "-f", "/Users/chromatrical/Downloads/random_files",
@@ -15,7 +16,7 @@ public class Main extends SscAssignment {
                     "-p"
             };
         }
-        // Define command-line options
+
         Options options = new Options();
         options.addOption("f", "folder", true, "Path to the folder (required)");
         options.addOption("c", "count-duplicates", false, "Count the total number of duplicate files");
@@ -23,7 +24,6 @@ public class Main extends SscAssignment {
         options.addOption("p", "print", false, "Print relative paths of all duplicate files");
         options.addOption("h", "help", false, "Display help");
 
-        // Parse command-line arguments
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
         CommandLine cmd;
@@ -31,17 +31,49 @@ public class Main extends SscAssignment {
         try {
             cmd = parser.parse(options, args);
 
-            // Display help if requested or if required arguments are missing
-            if (cmd.hasOption("h") || !cmd.hasOption("f")) {
-                formatter.printHelp("java -jar hw1.jar", options);
+            // Only -f case
+            if (args.length == 1 && args[0].equals("-f")) {
+                System.err.println("Error: Missing path argument for option: f");
+                formatter.printHelp("duplicate-file-finder", options);
+                return;
+            }
+
+            // Help check
+            if (cmd.hasOption("h")) {
+                formatter.printHelp("duplicate-file-finder", options);
+                return;
+            }
+
+            // Required -f check
+            if (!cmd.hasOption("f")) {
+                System.err.println("Error: Missing required option: f");
+                formatter.printHelp("duplicate-file-finder", options);
                 return;
             }
 
             // Extract values from arguments
             String folderPath = cmd.getOptionValue("f");
             boolean countDuplicates = cmd.hasOption("c");
-            String algorithm = cmd.getOptionValue("a", "bbb"); // Default to byte-by-byte comparison
+            String algorithm = cmd.getOptionValue("a", "bbb");
             boolean printDuplicates = cmd.hasOption("p");
+
+            // Check for invalid path
+            File folder = new File(folderPath);
+            if (!folder.exists() || !folder.isDirectory()) {
+                System.err.println("Error: Invalid directory path: " + folderPath);
+                return;
+            }
+
+            // Check for invalid algorithm
+            if (cmd.hasOption("a") && !isValidAlgorithm(algorithm)) {
+                System.err.println("Input algorithm not supported.");
+                System.err.println("usage: duplicate-file-finder");
+                System.err.println("-a,--algorithm <arg>   Finding duplicates (bbb, sha256, md5)");
+                System.err.println("-c,--count-duplicates  Print total count of duplicate files");
+                System.err.println("-f,--folder <arg>      Path to the target folder (required)");
+                System.err.println("-p,--print             Print relative paths of duplicates");
+                return;
+            }
 
             System.out.println("Starting duplicate file detection...");
             System.out.println("Folder Path: " + folderPath);
@@ -54,10 +86,18 @@ public class Main extends SscAssignment {
             finder.findDuplicates();
 
         } catch (ParseException e) {
-            System.out.println("Error parsing command-line arguments: " + e.getMessage());
-            formatter.printHelp("java -jar hw1.jar", options);
+            System.err.println("Error parsing command-line arguments: " + e.getMessage());
+            formatter.printHelp("duplicate-file-finder", options);
         } catch (IOException e) {
-            System.out.println("Error processing folder: " + e.getMessage());
+            System.err.println("Error processing folder: " + e.getMessage());
         }
+    }
+
+    private static boolean isValidAlgorithm(String algorithm) {
+        return algorithm != null && (
+                algorithm.equals("bbb") ||
+                        algorithm.equals("sha256") ||
+                        algorithm.equals("md5")
+        );
     }
 }
