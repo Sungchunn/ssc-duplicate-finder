@@ -44,12 +44,10 @@ public class DuplicateFinder {
         printStatistics();
 
         // Print additional information based on flags
-        if (countDuplicates) {
-            printDuplicateCount();
+        if (countDuplicates || printDuplicates) {
+            printDuplicateInformation();
         }
-        if (printDuplicates) {
-            printDuplicateFiles();
-        }
+
     }
 
     public long countDuplicates() {
@@ -70,7 +68,7 @@ public class DuplicateFinder {
         System.out.println(" - Total Size: " + df.format(stats[2]) + " bytes");
     }
 
-    private void printDuplicateCount() {
+    private void printDuplicateInformation() {
         DecimalFormat df = new DecimalFormat("#,###");
         long duplicateGroups = countDuplicates();
         long totalDuplicateFiles = hashToFileMap.values().stream()
@@ -81,15 +79,19 @@ public class DuplicateFinder {
         System.out.println("\nDuplicate Statistics:");
         System.out.println(" - Total Duplicate Groups: " + df.format(duplicateGroups));
         System.out.println(" - Total Duplicate Files: " + df.format(totalDuplicateFiles));
-    }
 
-    private void printDuplicateFiles() {
-        System.out.println("\nDuplicate Files:");
+        System.out.println("\nDuplicate File Groups:");
         hashToFileMap.forEach((hash, paths) -> {
             if (paths.size() > 1) {
-                System.out.println("Duplicate group:");
+                System.out.println("================================================================");
+                System.out.println("Duplicate group (size: " + paths.size() + "):");
                 paths.forEach(path -> System.out.println(" - " + path));
             }
         });
+        if (duplicateGroups > 0) {
+            System.out.println("================================================================");
+        }
     }
+
+
 }
