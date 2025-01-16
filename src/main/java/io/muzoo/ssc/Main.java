@@ -10,7 +10,7 @@ public class Main extends SscAssignment {
         // Remove the default args as -f is required
         if (args.length == 0) {
             args = new String[]{
-                    "-f", "/Users/chromatrical/Downloads/test_files",
+                    "-f", "/Users/chromatrical/Downloads/random_files",
                     "-c",
                     "-p"
             };
