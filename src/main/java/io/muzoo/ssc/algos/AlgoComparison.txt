@@ -1,0 +1,77 @@
+Aspect: Algorithm Type
+- MD5Algo: Cryptographic hash function.
+- SHA256Algo: Cryptographic hash function.
+- BBBAlgo: Byte-by-byte comparison (non-cryptographic).
+
+Aspect: Hashing Method
+- MD5Algo: Uses the MD5 algorithm to compute a 128-bit hash.
+- SHA256Algo: Uses the SHA-256 algorithm to compute a 256-bit hash.
+- BBBAlgo: Uses the file’s length and a content consistency check to generate a “hash-like” string.
+
+Aspect: Library Used
+- MD5Algo: Apache Commons Codec’s DigestUtils.md5Hex.
+- SHA256Algo: Apache Commons Codec’s DigestUtils.sha256Hex.
+- BBBAlgo: Apache Commons IO’s FileUtils.contentEquals for content comparison.
+
+Aspect: Security
+- MD5Algo:
+  - Fast but not secure for cryptographic purposes (collision-prone).
+  - Suitable for duplicate file detection.
+- SHA256Algo:
+  - Secure and resistant to collisions.
+  - Suitable for duplicate detection and cryptographic applications.
+- BBBAlgo:
+  - Non-cryptographic.
+  - Compares files exactly (content-based) but is slower than MD5 and SHA-256 for large files.
+
+Aspect: Output
+- MD5Algo: 128-bit hexadecimal string (32 characters).
+- SHA256Algo: 256-bit hexadecimal string (64 characters).
+- BBBAlgo: String in the format <file_length>-<consistency>. E.g., "1024-true" for a 1 KB file with consistent content.
+
+Aspect: Performance
+- MD5Algo:
+  - Efficient for small to medium-sized files.
+  - Faster than SHA-256.
+- SHA256Algo:
+  - Slower than MD5 due to a longer hash and additional security.
+- BBBAlgo:
+  - Performance depends on file size as it performs byte-by-byte comparison.
+  - Slow for large files.
+
+Aspect: Use Cases
+- MD5Algo:
+  - Detecting duplicates in non-critical applications.
+  - Hash-based lookups.
+- SHA256Algo:
+  - Detecting duplicates in sensitive or security-critical applications.
+  - Cryptographic verification.
+- BBBAlgo:
+  - Ensures exact content matching.
+  - Suitable for verifying binary files where bit-for-bit comparison is required.
+
+Aspect: Error Handling
+- MD5Algo: Throws IOException if an error occurs while reading the file.
+- SHA256Algo: Throws IOException if an error occurs while reading the file.
+- BBBAlgo: Throws IOException if the file is null, non-existent, or unreadable.
+
+Aspect: Efficiency on Large Files
+- MD5Algo:
+  - Efficient as only a hash is computed (content is not stored in memory).
+  - Handles large files gracefully.
+- SHA256Algo:
+  - Similar efficiency as MD5.
+  - Handles large files without excessive memory use.
+- BBBAlgo:
+  - Less efficient as it requires reading the file content twice (once for size, once for consistency check).
+
+Aspect: Implementation Details
+- MD5Algo:
+  - Reads the file using FileInputStream.
+  - Computes the MD5 hash using Apache Commons Codec.
+- SHA256Algo:
+  - Reads the file using FileInputStream.
+  - Computes the SHA-256 hash using Apache Commons Codec.
+- BBBAlgo:
+  - Computes the file size using File.length().
+  - Uses FileUtils.contentEquals for byte-by-byte content comparison.

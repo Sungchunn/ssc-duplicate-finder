@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         // Hardcoded values for testing purposes
         String hardcodedFolderPath = "/Users/chromatrical/Downloads/test_files"; // Replace with your test folder path
-        String hardcodedAlgorithm = "sha256"; // "sha256" , "md5", "bbb"
+        String hardcodedAlgorithm = "bbb"; // "sha256" , "md5", "bbb"
         boolean hardcodedCountDuplicates = true;
         boolean hardcodedPrintDuplicates = true;
 
