@@ -48,8 +48,8 @@ public class FileVisitorService {
     }
 
     /**
-     * Traverses the specified directory recursively to collect file statistics
-     * and identify duplicate files based on their computed hashes.
+     * Recursively traverses the specified directory to gather file statistics
+     * and detect duplicate files based on their computed hashes.
      *
      * @param folderPath The path to the directory to traverse.
      * @throws IOException If an I/O error occurs while accessing files or directories.
@@ -58,21 +58,23 @@ public class FileVisitorService {
         Files.walkFileTree(Paths.get(folderPath), new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                // Increment the folder count for each directory visited
                 statistics.incrementFolderCount();
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                // Increment the file count and total file size
                 statistics.incrementFileCount();
                 statistics.incrementTotalFileSize(Files.size(file));
 
                 try {
-                    // Compute the hash of the file and group duplicates
                     String hash = hashStrategy.computerHash(file.toFile());
-                    hashToFileMap.computeIfAbsent(hash, k -> new ArrayList<>()).add(file);
+                    List<Path> paths = hashToFileMap.computeIfAbsent(hash, k -> new ArrayList<>());
+                    paths.add(file);
+
+                    if (paths.size() > 1) {
+                        statistics.incrementDuplicateFileCount();
+                    }
                 } catch (Exception e) {
                     System.err.println("Error processing file: " + file + " - " + e.getMessage());
                 }

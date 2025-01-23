@@ -7,13 +7,12 @@ import io.muzoo.ssc.cli.FilePathValidator;
 
 /**
  * The Main class serves as the entry point for the Duplicate File Finder application.
- * It processes command-line arguments, validates user input, and orchestrates the duplicate
+ * 
  * file detection workflow using the `DuplicateFinder` class.
  */
 public class Main {
     public static void main(String[] args) {
-        // Hardcoded values for testing purposes
-        String hardcodedFolderPath = "/Users/chromatrical/Downloads/test_files"; // Replace with your test folder path
+        String hardcodedFolderPath = "/Users/chromatrical/Downloads/dupli_testing";
         String hardcodedAlgorithm = "bbb"; // "sha256" , "md5", "bbb"
         boolean hardcodedCountDuplicates = true;
         boolean hardcodedPrintDuplicates = true;
@@ -25,7 +24,6 @@ public class Main {
             System.out.println("Count Duplicates: " + hardcodedCountDuplicates);
             System.out.println("Print Duplicates: " + hardcodedPrintDuplicates);
 
-            // Directly create a DuplicateFinder instance with hardcoded values
             try {
                 DuplicateFinder finder = new DuplicateFinder(
                         hardcodedFolderPath,
