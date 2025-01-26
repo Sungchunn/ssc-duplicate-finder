@@ -1,0 +1,32 @@
+## Gerrymandering Final Project
+
+#### Overview
+
+This project analyzes and visualizes gerrymandering using data-driven techniques to assess political boundaries’ fairness and representation. The primary focus is to understand how electoral districts are drawn and the implications for democracy. The project involves data analysis, visualization, and exploration of potential solutions to mitigate gerrymandering effects.
+
+##### Features
+	•	**Data Processing**: Prepares and cleans data for meaningful analysis.
+	•	**Visualization**: Creates detailed maps and charts to illustrate electoral boundaries and their impacts.
+	•	**Statistical Analysis**: Evaluates metrics such as compactness and partisan bias.
+	•	**Algorithm Development**: Proposes methods to improve district drawing processes.
+
+##### Requirements
+
+Tools and Libraries
+	•	Python 3.x
+	•	Jupyter Notebook
+	•	Libraries:
+	•	pandas (Data manipulation)
+	•	numpy (Numerical computation)
+	•	matplotlib (Data visualization)
+	•	geopandas (Geospatial data analysis)
+	•	shapely (Geometric objects)
+	•	seaborn (Advanced visualization)
+	•	scipy (Statistical calculations)
+	•	Additional dependencies as specified in the project.
+
+#### Data Sources
+	•	Presidential Election Result:
+	  •	MIT Election Data + Science Lab U.S. President Precinct-Level Returns 2020
+	•	Statemap:
+	  •	United States Census 2020 Tiger/line shapefiles
