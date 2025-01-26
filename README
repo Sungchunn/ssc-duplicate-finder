@@ -1,32 +1,112 @@
-## Gerrymandering Final Project
+Here’s the revised and merged README file including the additional design and refactoring details:
 
-#### Overview
+Duplicate Finder Program
 
-This project analyzes and visualizes gerrymandering using data-driven techniques to assess political boundaries’ fairness and representation. The primary focus is to understand how electoral districts are drawn and the implications for democracy. The project involves data analysis, visualization, and exploration of potential solutions to mitigate gerrymandering effects.
+Overview
 
-##### Features
-	•	**Data Processing**: Prepares and cleans data for meaningful analysis.
-	•	**Visualization**: Creates detailed maps and charts to illustrate electoral boundaries and their impacts.
-	•	**Statistical Analysis**: Evaluates metrics such as compactness and partisan bias.
-	•	**Algorithm Development**: Proposes methods to improve district drawing processes.
+I’ve developed a program to identify and manage duplicate files in a specified folder. This project refactors the original implementation to incorporate design patterns and adhere to SOLID principles. The program supports flexible command line arguments through Apache Commons CLI and offers advanced options for customization.
 
-##### Requirements
+Design Patterns and Principles
 
-Tools and Libraries
-	•	Python 3.x
-	•	Jupyter Notebook
-	•	Libraries:
-	•	pandas (Data manipulation)
-	•	numpy (Numerical computation)
-	•	matplotlib (Data visualization)
-	•	geopandas (Geospatial data analysis)
-	•	shapely (Geometric objects)
-	•	seaborn (Advanced visualization)
-	•	scipy (Statistical calculations)
-	•	Additional dependencies as specified in the project.
+Creational Patterns
+	•	Factory Method
+Used for creating strategies dynamically based on the chosen algorithm (bbb, sha256, md5).
+	•	Builder
+Allows for flexible creation and configuration of:
+	•	Command-line options
+	•	The duplicate finder itself
+	•	The output printer
 
-#### Data Sources
-	•	Presidential Election Result:
-	  •	MIT Election Data + Science Lab U.S. President Precinct-Level Returns 2020
-	•	Statemap:
-	  •	United States Census 2020 Tiger/line shapefiles
+Structural Patterns
+	•	Decorator
+Employed for buffering file streams (e.g., using Apache Commons library). While buffering is handled automatically, I’ve identified areas where it’s utilized effectively without redundancy.
+
+Behavioral Patterns
+	•	Strategy
+Implements interchangeable algorithms for duplicate detection:
+	•	Byte-by-byte comparison (bbb)
+	•	SHA-256 checksum comparison (sha256)
+	•	MD5 checksum comparison (md5)
+	•	Lazy Initialization
+Optimizes performance by delaying the computation of values (e.g., file metadata) until they’re explicitly needed.
+	•	Visitor
+Simplifies directory and file traversal, which is already implemented in the original design.
+
+Features and Command-Line Options
+
+Here are the supported command-line options:
+	•	-c, --count-duplicates
+Prints the total count of duplicate files. For example, if there are N files with the same content, they will be counted as one.
+	•	-a ALGO, --algorithm ALGO
+Specifies the algorithm for finding duplicates. Supported options:
+	•	bbb: Byte-by-byte comparison.
+	•	sha256: SHA-256 checksum comparison.
+	•	md5: MD5 checksum comparison.
+	•	-p, --print
+Prints the relative paths of all duplicate files grouped together.
+	•	-f /path/to/folder
+Specifies the path to the target folder. This argument is required for the program to run.
+
+Behavior and Output
+	1.	If the -f option is provided with a valid path, my program will print the total number of:
+	•	Files
+	•	Folders
+	•	File size (in bytes)
+Numbers are formatted with commas for readability (e.g., 1,234,567).
+	2.	The order of command-line options doesn’t matter. For example:
+
+java -jar DuplicateFinder.jar -c -a md5
+
+yields the same output as:
+
+java -jar DuplicateFinder.jar -a md5 -c
+
+
+	3.	Invalid or missing arguments trigger a help message using Apache Commons CLI’s HelpFormatter.
+
+Example Usage
+	•	Count duplicate files using MD5 checksum:
+
+java -jar DuplicateFinder.jar -f /path/to/folder -c -a md5
+
+
+	•	Print paths of duplicates grouped together using SHA-256:
+
+java -jar DuplicateFinder.jar -f /path/to/folder -p -a sha256
+
+
+	•	Run a byte-by-byte comparison:
+
+java -jar DuplicateFinder.jar -f /path/to/folder -c -a bbb
+
+Refactoring Details
+	1.	SOLID Principles
+	•	Single Responsibility Principle: Each class handles one responsibility (e.g., FileVisitorService for file traversal, DuplicateReport for reporting duplicates).
+	•	Open/Closed Principle: The program supports additional algorithms without modifying existing code, thanks to the Strategy pattern.
+	•	Liskov Substitution Principle: All strategies for duplicate detection follow the same interface.
+	•	Interface Segregation Principle: Interfaces are designed to be lean and focused, avoiding unnecessary methods.
+	•	Dependency Inversion Principle: High-level modules depend on abstractions rather than concrete implementations.
+	2.	Key Design Components
+	•	Factory Method creates duplicate detection strategies dynamically.
+	•	Builder simplifies the creation of the main components with clear, configurable options.
+	•	Decorator ensures efficient buffering for file I/O.
+	•	Visitor cleanly handles directory traversal.
+
+Requirements
+	•	Java 8 or higher
+	•	Apache Commons CLI library
+
+How to Run
+	1.	Compile the program:
+
+javac -cp commons-cli-1.4.jar *.java
+
+
+	2.	Run the program:
+
+java -cp commons-cli-1.4.jar:. DuplicateFinder -f /path/to/folder [other options]
+
+Notes
+	•	The -f option is mandatory. Without it, the program won’t execute.
+	•	Ensure the specified folder path exists and is accessible.
+	•	For optimal performance with large folders, consider using checksum algorithms (sha256 or md5).
