@@ -1,96 +1,93 @@
-Here’s the revised and merged README file including the additional design and refactoring details:
+# Duplicate Finder Program
 
-Duplicate Finder Program
+## Overview
 
-Overview
+- I’ve developed a program to identify and manage duplicate files in a specified folder. This project refactors the original implementation to incorporate design patterns and adhere to SOLID principles. The program supports flexible command line arguments through Apache Commons CLI and offers advanced options for customization.
 
-I’ve developed a program to identify and manage duplicate files in a specified folder. This project refactors the original implementation to incorporate design patterns and adhere to SOLID principles. The program supports flexible command line arguments through Apache Commons CLI and offers advanced options for customization.
+## Design Patterns and Principles
 
-Design Patterns and Principles
+- Creational Patterns
+	- Factory Method
+- Used for creating strategies dynamically based on the chosen algorithm (bbb, sha256, md5).
+	- Builder
+- Allows for flexible creation and configuration of:
+	- Command-line options
+- The duplicate finder itself
+	- The output printer
 
-Creational Patterns
-	•	Factory Method
-Used for creating strategies dynamically based on the chosen algorithm (bbb, sha256, md5).
-	•	Builder
-Allows for flexible creation and configuration of:
-	•	Command-line options
-	•	The duplicate finder itself
-	•	The output printer
+## Structural Patterns
+- **Decorator**
+	- Employed for buffering file streams (e.g., using Apache Commons library). While buffering is handled automatically, I’ve identified areas where it’s utilized effectively without redundancy.
+- **Behavioral Patterns**
+	- **Strategy**
+	- Implements interchangeable algorithms for duplicate detection:
+		- Byte-by-byte comparison (bbb)
+		- SHA-256 checksum comparison (sha256)
+		- MD5 checksum comparison (md5)
+	- **Lazy Initialization**
+		- Optimizes performance by delaying the computation of values (e.g., file metadata) until they’re explicitly needed.
+	- **Visitor**
+		- Simplifies directory and file traversal, which is already implemented in the original design.
 
-Structural Patterns
-	•	Decorator
-Employed for buffering file streams (e.g., using Apache Commons library). While buffering is handled automatically, I’ve identified areas where it’s utilized effectively without redundancy.
+## Features and Command-Line Options
 
-Behavioral Patterns
-	•	Strategy
-Implements interchangeable algorithms for duplicate detection:
-	•	Byte-by-byte comparison (bbb)
-	•	SHA-256 checksum comparison (sha256)
-	•	MD5 checksum comparison (md5)
-	•	Lazy Initialization
-Optimizes performance by delaying the computation of values (e.g., file metadata) until they’re explicitly needed.
-	•	Visitor
-Simplifies directory and file traversal, which is already implemented in the original design.
+- Here are the supported command-line options:
+	- `-c, --count-duplicates`
+		- Prints the total count of duplicate files. For example, if there are N files with the same content, they will be counted as one.
+	- `-a ALGO, --algorithm ALGO`
+		- Specifies the algorithm for finding duplicates. Supported options:
+			- bbb: Byte-by-byte comparison.
+			- sha256: SHA-256 checksum comparison.
+			- md5: MD5 checksum comparison.
+	- `-p, --print`
+		- Prints the relative paths of all duplicate files grouped together.
+	- `-f /path/to/folder`
+		- Specifies the path to the target folder. This argument is required for the program to run.
 
-Features and Command-Line Options
-
-Here are the supported command-line options:
-	•	-c, --count-duplicates
-Prints the total count of duplicate files. For example, if there are N files with the same content, they will be counted as one.
-	•	-a ALGO, --algorithm ALGO
-Specifies the algorithm for finding duplicates. Supported options:
-	•	bbb: Byte-by-byte comparison.
-	•	sha256: SHA-256 checksum comparison.
-	•	md5: MD5 checksum comparison.
-	•	-p, --print
-Prints the relative paths of all duplicate files grouped together.
-	•	-f /path/to/folder
-Specifies the path to the target folder. This argument is required for the program to run.
-
-Behavior and Output
-	1.	If the -f option is provided with a valid path, my program will print the total number of:
-	•	Files
-	•	Folders
-	•	File size (in bytes)
-Numbers are formatted with commas for readability (e.g., 1,234,567).
+## Behavior and Output
+	1.	If the `-f` option is provided with a valid path, my program will print the total number of:
+		- Files
+		- Folders
+		- File size (in bytes)
+	- Numbers are formatted with commas for readability (e.g., 1,234,567).
 	2.	The order of command-line options doesn’t matter. For example:
 
-java -jar DuplicateFinder.jar -c -a md5
+`java -jar DuplicateFinder.jar -c -a md5`
 
 yields the same output as:
 
-java -jar DuplicateFinder.jar -a md5 -c
+`java -jar DuplicateFinder.jar -a md5 -c`
 
 
 	3.	Invalid or missing arguments trigger a help message using Apache Commons CLI’s HelpFormatter.
 
-Example Usage
-	•	Count duplicate files using MD5 checksum:
+## Example Usage
+	- Count duplicate files using MD5 checksum:
 
-java -jar DuplicateFinder.jar -f /path/to/folder -c -a md5
-
-
-	•	Print paths of duplicates grouped together using SHA-256:
-
-java -jar DuplicateFinder.jar -f /path/to/folder -p -a sha256
+`java -jar DuplicateFinder.jar -f /path/to/folder -c -a md5`
 
 
-	•	Run a byte-by-byte comparison:
+	- Print paths of duplicates grouped together using SHA-256:
 
-java -jar DuplicateFinder.jar -f /path/to/folder -c -a bbb
+`java -jar DuplicateFinder.jar -f /path/to/folder -p -a sha256`
 
-Refactoring Details
-	1.	SOLID Principles
-	•	Single Responsibility Principle: Each class handles one responsibility (e.g., FileVisitorService for file traversal, DuplicateReport for reporting duplicates).
-	•	Open/Closed Principle: The program supports additional algorithms without modifying existing code, thanks to the Strategy pattern.
-	•	Liskov Substitution Principle: All strategies for duplicate detection follow the same interface.
-	•	Interface Segregation Principle: Interfaces are designed to be lean and focused, avoiding unnecessary methods.
-	•	Dependency Inversion Principle: High-level modules depend on abstractions rather than concrete implementations.
-	2.	Key Design Components
-	•	Factory Method creates duplicate detection strategies dynamically.
-	•	Builder simplifies the creation of the main components with clear, configurable options.
-	•	Decorator ensures efficient buffering for file I/O.
-	•	Visitor cleanly handles directory traversal.
+
+	- Run a byte-by-byte comparison:
+
+`java -jar DuplicateFinder.jar -f /path/to/folder -c -a bbb`
+
+## Refactoring Details
+	1.	**SOLID Principles**
+		- **Single Responsibility Principle**: Each class handles one responsibility (e.g., FileVisitorService for file traversal, DuplicateReport for reporting duplicates).
+		- **Open/Closed Principle**: The program supports additional algorithms without modifying existing code, thanks to the Strategy pattern.
+		- **Liskov Substitution Principle**: All strategies for duplicate detection follow the same interface.
+		- **Interface Segregation Principle**: Interfaces are designed to be lean and focused, avoiding unnecessary methods.
+		- **Dependency Inversion Principle**: High-level modules depend on abstractions rather than concrete implementations.
+	2.	**Key Design Components**
+		- **Factory Method** creates duplicate detection strategies dynamically.
+		- **Builder** simplifies the creation of the main components with clear, configurable options.
+- 	**Decorator** ensures efficient buffering for file I/O.
+	•	**Visitor** cleanly handles directory traversal.
 
 Requirements
 	•	Java 8 or higher
