@@ -1,10 +1,10 @@
-# SSC Duplicate Finder
+#SSC Duplicate Finder
 
 ## Overview
 
-The SSC Duplicate Finder is a command-line tool designed to identify and manage duplicate files within a specified directory. It offers various algorithms for detecting duplicates and provides flexible output options to suit different user needs.
+- The SSC Duplicate Finder is a command-line tool designed to identify and manage duplicate files within a specified directory. It offers various algorithms for detecting duplicates and provides flexible output options to suit different user needs.
 
-## Features
+##Features
 
 - **Duplicate Detection Algorithms**:
   - `bbb`: Byte-by-byte comparison.
@@ -15,7 +15,7 @@ The SSC Duplicate Finder is a command-line tool designed to identify and manage 
   - Count total duplicates.
   - Print relative paths of duplicate files grouped together.
 
-## Command-Line Options
+##Command-Line Options
 
 The program supports the following command-line arguments:
 
@@ -29,7 +29,7 @@ The program supports the following command-line arguments:
 
 - `-h, --help`: Displays the help message with usage instructions.
 
-## Usage
+##Usage
 
 1. **Basic Usage**:
    To run the duplicate finder on a specific folder:
